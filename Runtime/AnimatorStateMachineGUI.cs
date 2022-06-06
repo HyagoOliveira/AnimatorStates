@@ -7,6 +7,11 @@ using UnityEditor.Animations;
 
 namespace ActionCode.AnimatorStates
 {
+    /// <summary>
+    /// GUI debugger inspector for Animator states.
+    /// <para>Use it to show the Current and Last State from an Animator.</para>
+    /// <para><b>This component only works on Editor Mode.</b></para>
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Animator))]
@@ -68,7 +73,7 @@ namespace ActionCode.AnimatorStates
             DrawField("Last", LastStateName);
             DrawField("Current", CurrentStateName + " F: " + frames);
 #else
-            DrawLine("Cannot read Animator states in Player mode.");
+            DrawLine("Cannot read Animator States.");
 #endif
             GUI.EndGroup();
         }

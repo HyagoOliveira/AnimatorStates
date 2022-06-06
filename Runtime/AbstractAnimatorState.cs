@@ -3,7 +3,7 @@
 namespace ActionCode.AnimatorStates
 {
     /// <summary>
-    /// Abstract State for an Animator.
+    /// Abstract State for an Animator <see cref="StateMachineBehaviour"/>.
     /// </summary>
     public abstract class AbstractAnimatorState : StateMachineBehaviour
     {
