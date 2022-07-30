@@ -73,7 +73,7 @@ namespace ActionCode.AnimatorStates
             DrawField("Last", LastStateName);
             DrawField("Current", CurrentStateName + " F: " + frames);
 #else
-            DrawLine("Cannot read Animator States.");
+            DrawLine("Cannot read Animator States out of Editor Mode.");
 #endif
             GUI.EndGroup();
         }
