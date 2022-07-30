@@ -32,18 +32,18 @@ namespace ActionCode.AnimatorStates
 
         /// <summary>
         /// Similar to MonoBehaviour.Start(), this function is called on the frame when a 
-        /// script is enabled just before any of the Update methods are called the first time.
+        /// script is enabled, just before any of the Update methods are called for the first time.
         /// </summary>
         public virtual void Start() { }
 
         /// <summary>
-        /// Similar to MonoBehaviour.Update(), this function is called every frame, 
-        /// if the <see cref="StateMachine"/> is enabled.
+        /// Similar to MonoBehaviour.Update(), this function is called every frame 
+        /// while the <see cref="StateMachine"/> is enabled.
         /// </summary>
         public virtual void Update() { }
 
-        protected virtual void LoadParameters() { }
         protected virtual void LoadComponents() { }
+        protected virtual void LoadParameters() { }
 
         #region Override Components functions
         /// <summary>

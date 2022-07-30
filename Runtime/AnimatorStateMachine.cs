@@ -27,6 +27,7 @@ namespace ActionCode.AnimatorStates
 
         private void Start()
         {
+            // States are initialized using OnEnable, which is executed before Start function.
             foreach (var state in States)
             {
                 state.Start();
