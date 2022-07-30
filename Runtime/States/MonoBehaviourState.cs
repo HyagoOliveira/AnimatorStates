@@ -5,36 +5,27 @@ namespace ActionCode.AnimatorStates
     /// <summary>
     /// Binds and executes an <see cref="AbstractMonoBehaviourState"/>.
     /// </summary>
-    public sealed class MonoBehaviourState : AbstractAnimatorState
+    public sealed class MonoBehaviourState : GenericMonoBehaviourState<AbstractMonoBehaviourState>
     {
         [SerializeField] private string stateName = "";
 
-        private AbstractMonoBehaviourState state;
-
-        protected override void LoadComponents()
+        protected override AbstractMonoBehaviourState FindState()
         {
-            base.LoadComponents();
+            // GetComponentInChildren() doesn't have a overriding for a string type.
+            // We need to get it manually.
 
-            state = GameObject.GetComponent(stateName) as AbstractMonoBehaviourState;
-            if (state == null) Debug.LogError($"State {stateName} was not found on {GameObject.name}.");
-        }
+            // First checking on the parent GameObject
+            var state = Transform.GetComponent(stateName) as AbstractMonoBehaviourState;
+            if (state) return state;
 
-        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-        {
-            base.OnStateEnter(animator, stateInfo, layerIndex);
-            state.StateEnter();
-        }
+            // Checking on the children GameObject
+            foreach (Transform child in Transform)
+            {
+                state = child.GetComponent(stateName) as AbstractMonoBehaviourState;
+                if (state) return state;
+            }
 
-        public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-        {
-            base.OnStateUpdate(animator, stateInfo, layerIndex);
-            state.StateUpdate();
-        }
-
-        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-        {
-            base.OnStateExit(animator, stateInfo, layerIndex);
-            state.StateExit();
+            return null;
         }
     }
 }
