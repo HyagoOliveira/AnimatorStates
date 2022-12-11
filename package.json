@@ -1,7 +1,7 @@
 {
   "name": "com.actioncode.animator-states",
   "displayName": "ActionCode-Animator States",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "unity": "2019.3",
   "description": "Enables StateMachineBehaviour to use instantiated scenes componentes.",
   "keywords": [
@@ -9,7 +9,6 @@
     "State Machine",
     "StateMachineBehaviour"
   ],
-  "dependencies": {},
   "license": "MIT",
   "homepage": "https://github.com/HyagoOliveira/AnimatorStates#readme",
   "repository": {

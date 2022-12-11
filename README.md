@@ -2,7 +2,7 @@
 
 * Use scene instance objects on Animators Controllers assets, inside StateMachineBehaviour.
 * Unity minimum version: **2019.3**
-* Current version: **1.0.0**
+* Current version: **1.1.0**
 * License: **MIT**
 
 ## Summary
