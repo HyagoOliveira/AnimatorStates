@@ -15,21 +15,73 @@ The limitation of StateMachineBehaviours is they cannot reference instantiated s
 The StateMachineBehaviour class derives from ScriptableObject. As such, state machine behaviours are assets, not scene objects. This means that in order to exist within a scene, instances of state machine behaviours are automatically created at runtime during the Animator's internal Awake call. 
 Finding a reference to them during a MonoBehaviour's Awake function is not recommended as it will yield unpredictable results.
 
-To solve this situation, we can use **AnimatorStateMachine** and **AbstractAnimatorState** implementations provided on this package.
+To solve this situation, we can use **AnimatorStateMachine** and **AbstractAnimatorState** or **AbstractMonoBehaviourState** implementations provided on this package.
 
 ## How To Use
 
 ### Using AnimatorStateMachine
 
-Add the [AnimatorStateMachine](/Runtime/AnimatorStateMachine.cs) component inside the same GameObject where your Animator component is. 
-This script will act as a bridge to the referenced scene objects and yours [AbstractAnimatorState](/Runtime/AbstractAnimatorState.cs) implementations.
+Add the [AnimatorStateMachine](/Runtime/StatesMachine/AnimatorStateMachine.cs) component inside the same GameObject where your Animator component is. 
+This script will act as a bridge to the referenced scene objects and yours [AbstractAnimatorState](/Runtime/States/AbstractAnimatorState.cs) implementations.
 
 AbstractAnimatorState derives from StateMachineBehaviour and therefore are identical to them but **can reference instantiated components** on the Scene. 
 You can create implementations of this class and use some functionalities already implemented like find components inside the runtime transform.
 
+### Using AbstractMonoBehaviourState
+
+Add the [AnimatorStateMachine](/Runtime/StatesMachine/AnimatorStateMachine.cs) component inside the same GameObject where your Animator component is.
+
+Implement a class from [AbstractMonoBehaviourState](/Runtime/States/AbstractAnimatorState.cs) and add it to the same GameObject. 
+AbstractMonoBehaviourState derives from MonoBehaviour and you can override the `EnterState()`, `UpdateState()` or `ExitState()` functions to execute code when the Animator enters, updates or exits a selected State, respectively. 
+
+```csharp
+using UnityEngine;
+using ActionCode.AnimatorStates;
+
+namespace YourGameNamespace
+{
+    [DisallowMultipleComponent]
+    public sealed class RunState : AbstractMonoBehaviourState
+    {
+        protected override void UpdateState()
+        {
+            base.UpdateState();
+            print("UpdateState");
+        }
+    }
+}
+````
+
+You can also reference this script in other component and use the available `OnEnter`, `OnUpdate` or `OnExit` events.
+
+```csharp
+using UnityEngine;
+
+namespace YourGameNamespace
+{
+   [DisallowMultipleComponent]
+    public sealed class Tutorial : MonoBehaviour
+    {
+        public RunState runState;
+
+        private void OnEnable() => runState.OnEnter += HandleOnRunEnter;
+        private void OnDisable() => runState.OnEnter -= HandleOnRunEnter;
+
+        private void HandleOnRunEnter()
+        {
+            print("Player starts to run!");
+        }
+    }
+}
+```
+
+Finally, open your Animation Controller asset, select a State and click on the **Add Behaviour** button. Select MonoBehaviourState and write your class name on the State Name field.
+
+![AnimatorController Screenshot](/Docs~/AnimatorController.png "Using AbstractMonoBehaviourState")
+
 ### Using AnimatorStateMachineGUI
 
-Add the [AnimatorStateMachineGUI](/Runtime/AnimatorStateMachineGUI.cs) component inside the same GameObject where your AnimatorStateMachine component is
+Add the [AnimatorStateMachineGUI](/Runtime/StatesMachine/AnimatorStateMachineGUI.cs) component inside the same GameObject where your AnimatorStateMachine component is
 and you be able to see the Current and Last States from your Animator.
 
 ![AnimatorStateMachineGUI Screenshot](/Docs~/AnimatorStateMachineGUI.png "Using AnimatorStateMachineGUI")
