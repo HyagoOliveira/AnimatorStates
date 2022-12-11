@@ -31,8 +31,7 @@ You can create implementations of this class and use some functionalities alread
 
 Add the [AnimatorStateMachine](/Runtime/StatesMachine/AnimatorStateMachine.cs) component inside the same GameObject where your Animator component is.
 
-Implement a class from [AbstractMonoBehaviourState](/Runtime/States/AbstractAnimatorState.cs) and add it to the same GameObject. 
-AbstractMonoBehaviourState derives from MonoBehaviour and you can override the `EnterState()`, `UpdateState()` or `ExitState()` functions to execute code when the Animator enters, updates or exits a selected State, respectively. 
+Implement a class from [AbstractMonoBehaviourState](/Runtime/States/AbstractMonoBehaviourState.cs) and add it to the same GameObject. AbstractMonoBehaviourState derives from MonoBehaviour and you can override the `EnterState()`, `UpdateState()` or `ExitState()` functions to execute code when the Animator enters, updates or exits a selected State, respectively. 
 
 ```csharp
 using UnityEngine;
@@ -75,7 +74,8 @@ namespace YourGameNamespace
 }
 ```
 
-Finally, open your Animation Controller asset, select a State and click on the **Add Behaviour** button. Select MonoBehaviourState and write your class name on the State Name field.
+Finally, open your Animation Controller asset, select a State and click on the **Add Behaviour** button. 
+Select **MonoBehaviourState** and write your class name on the **State Name** field.
 
 ![AnimatorController Screenshot](/Docs~/AnimatorController.png "Using AbstractMonoBehaviourState")
 
