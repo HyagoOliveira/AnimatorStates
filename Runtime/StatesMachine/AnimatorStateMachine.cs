@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 namespace ActionCode.AnimatorStates
 {
@@ -17,6 +19,11 @@ namespace ActionCode.AnimatorStates
         /// All States instances available on this StateMachine.
         /// </summary>
         public AbstractAnimatorState[] States { get; private set; }
+        
+        /// <summary>
+        /// All MonoBehaviour States instances available on this StateMachine.
+        /// </summary>
+        public Dictionary<Type, AbstractMonoBehaviourState> BehaviourStates { get; private set; }
 
         /// <summary>
         /// The local Animator component.
@@ -24,6 +31,8 @@ namespace ActionCode.AnimatorStates
         public Animator Animator => animator;
 
         private void Reset() => animator = GetComponent<Animator>();
+        
+        private void Awake() => FindBehaviourStates();
 
         private void Start()
         {
@@ -88,6 +97,26 @@ namespace ActionCode.AnimatorStates
             return false;
         }
 
+        /// <summary>
+        /// Returns an implementation of <see cref="AbstractMonoBehaviourState"/> attached to this GameObject or children.
+        /// </summary>
+        /// <typeparam name="T">An implementation of <see cref="AbstractMonoBehaviourState"/>.</typeparam>
+        /// <returns>An implementation of <see cref="AbstractMonoBehaviourState"/> or null.</returns>
+        public T GetBehaviourState<T> () where T : AbstractMonoBehaviourState => BehaviourStates[typeof(T)] as T;
+
+        /// <summary>
+        /// Tries to returns an implementation of <see cref="AbstractMonoBehaviourState"/> attached to this GameObject or children.
+        /// </summary>
+        /// <param name="state">The state to try to get.</param>
+        /// <typeparam name="T">An implementation of <see cref="AbstractMonoBehaviourState"/>.</typeparam>
+        /// <returns>Whether the given state was found.</returns>
+        public bool TryGetBehaviourState<T> (out T state) where T : AbstractMonoBehaviourState
+        {
+            var hasState = BehaviourStates.TryGetValue(typeof(T), out AbstractMonoBehaviourState behaviourState);
+            state = behaviourState as T;
+            return hasState;
+        }
+
         #region Animator Get/Set functions
         /// <summary>
         /// <inheritdoc cref="Animator.GetBool(int)"/>
@@ -135,6 +164,17 @@ namespace ActionCode.AnimatorStates
         public void SetLayerWeight(int layerIndex, float weight) =>
             Animator.SetLayerWeight(layerIndex, weight);
         #endregion
+
+        private void FindBehaviourStates ()
+        {
+            var states = GetComponentsInChildren<AbstractMonoBehaviourState>(includeInactive: true);
+            BehaviourStates = new Dictionary<Type, AbstractMonoBehaviourState>(states.Length);
+            foreach (var state in states)
+            {
+                var type = state.GetType();
+                BehaviourStates.Add(type, state);
+            }
+        }
 
         private void InitializeStates()
         {
