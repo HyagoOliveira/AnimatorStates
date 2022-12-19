@@ -51,7 +51,8 @@ namespace YourGameNamespace
 }
 ````
 
-You can also reference this script in other component and use the available `OnEnter`, `OnUpdate` or `OnExit` events.
+You can get a reference from this state using `AnimatorStateMachine.GetBehaviourState<RunState>();` or using a normal serialized approach.
+After getting a reference, you can use the available `OnEnter`, `OnUpdate` or `OnExit` events.
 
 ```csharp
 using UnityEngine;
