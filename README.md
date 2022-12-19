@@ -2,7 +2,7 @@
 
 * Use scene instance objects on Animators Controllers assets, inside StateMachineBehaviour.
 * Unity minimum version: **2019.3**
-* Current version: **1.1.0**
+* Current version: **1.2.0**
 * License: **MIT**
 
 ## Summary
@@ -51,7 +51,7 @@ namespace YourGameNamespace
 }
 ````
 
-You can get a reference from this state using `AnimatorStateMachine.GetBehaviourState<RunState>();` or using a normal serialized approach.
+You can get a reference from this state using `AnimatorStateMachine.GetBehaviourState<RunState>()` or using a normal serialized approach.
 After getting a reference, you can use the available `OnEnter`, `OnUpdate` or `OnExit` events.
 
 ```csharp
