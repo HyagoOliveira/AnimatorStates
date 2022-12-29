@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Increase Unity minimum version to 2021.1
+
 ### Added
 - IState interface
 - AbstractState component
