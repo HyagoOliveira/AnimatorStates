@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Removed
+- AbstractAnimatorState
+- AbstractMonoBehaviourState
+- GenericMonoBehaviourState
+- MonoBehaviourState
+
 ## [1.2.0] - 2022-12-19
 ### Added
 - BehaviourStates property and Get functions into AnimatorStateMachine component.
