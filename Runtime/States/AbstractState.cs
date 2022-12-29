@@ -16,10 +16,10 @@ namespace ActionCode.AnimatorStates
         public AnimatorStateMachine StateMachine { get; internal set; }
 
         public bool Enabled => gameObject.activeInHierarchy && enabled;
-        public bool IsExecuting { get; private set; }
+        public bool IsExecuting => StateMachine.IsExecuting(this);
 
-        public ulong TotalFrames { get; private set; }
-        public float TotalSeconds { get; private set; }
+        public ulong TotalFrames => StateMachine.TotalFrames;
+        public float TotalSeconds => StateMachine.TotalSeconds;
 
         protected virtual void Reset() => CheckStateMachine();
 
@@ -53,38 +53,27 @@ namespace ActionCode.AnimatorStates
         /// <returns></returns>
         public IEnumerator WaitWhileIsExecuting() => new WaitWhile(() => IsExecuting);
 
-        internal void ActiveState()
+        internal void ExecuteEnterState()
         {
-            IsExecuting = true;
-
-            ResetTime();
             EnterState();
+            OnEnter?.Invoke();
         }
 
-        internal void InternalUpdateState()
+        internal void ExecuteUpdateState()
         {
-            TotalFrames++;
-            TotalSeconds += Time.deltaTime;
             UpdateState();
+            OnUpdate?.Invoke();
         }
 
-        internal void DesactiveState()
+        internal void ExecuteExitState()
         {
-            IsExecuting = false;
-
-            ResetTime();
             ExitState();
+            OnExit?.Invoke();
         }
 
-        protected virtual void EnterState() => OnEnter?.Invoke();
-        protected virtual void UpdateState() => OnUpdate?.Invoke();
-        protected virtual void ExitState() => OnExit?.Invoke();
-
-        private void ResetTime()
-        {
-            TotalFrames = 0;
-            TotalSeconds = 0F;
-        }
+        protected virtual void EnterState() { }
+        protected virtual void UpdateState() { }
+        protected virtual void ExitState() { }
 
         private void CheckStateMachine()
         {
