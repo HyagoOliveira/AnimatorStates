@@ -43,9 +43,11 @@ namespace ActionCode.AnimatorStates
         private void Awake()
         {
             InitializeStates();
-            InitializeBinders();
             InitializeLayers();
         }
+
+        // StateMachineBehaviour lost references every time the Animator is disabled.
+        private void OnEnable() => InitializeBinders();
 
         #region Has State
         /// <summary>
@@ -170,18 +172,7 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         /// <typeparam name="T">The State type.</typeparam>
         /// <returns>Whether it is executing the given State type.</returns>
-        public bool IsExecuting<T>() where T : IState
-        {
-            foreach (var layer in layers.Values)
-            {
-                var isExecuting =
-                    layer.CurrentState is T &&
-                    layer.CurrentState.IsExecuting;
-
-                if (isExecuting) return true;
-            }
-            return false;
-        }
+        public bool IsExecuting<T>() where T : IState => GetState(typeof(T)).IsExecuting;
 
         /// <summary>
         /// Returns whether it is executing the given State type.
@@ -200,6 +191,26 @@ namespace ActionCode.AnimatorStates
             }
             return false;
         }
+        #endregion
+
+        #region Is Animator State
+        /// <summary>
+        /// Whether the given name matches the current Animator state.
+        /// </summary>
+        /// <param name="name">Name of the state.</param>
+        /// <param name="layer">The layer index.</param>
+        /// <returns>True if matches. False otherwise.</returns>
+        public bool IsAnimatorState(string name, int layer = 0) =>
+            animator.GetCurrentAnimatorStateInfo(layer).IsName(name);
+
+        /// <summary>
+        /// Whether the given id matches the current Animator state.
+        /// </summary>
+        /// <param name="id">The state ID. Use <see cref="Animator.StringToHash(string)"/> to hash it.</param>
+        /// <param name="layer">The layer index.</param>
+        /// <returns>True if matches. False otherwise.</returns>
+        public bool IsAnimatorState(int id, int layer = 0) =>
+            animator.GetCurrentAnimatorStateInfo(layer).shortNameHash == id;
         #endregion
 
         /// <summary>
@@ -245,6 +256,7 @@ namespace ActionCode.AnimatorStates
 
         private void InitializeBinders()
         {
+            // animator.GetBehaviours() can only be called after Awake function.
             var binders = animator.GetBehaviours<AbstractBinder>();
             foreach (var binder in binders)
             {
