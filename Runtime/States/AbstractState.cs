@@ -16,7 +16,7 @@ namespace ActionCode.AnimatorStates
         public AnimatorStateMachine StateMachine { get; internal set; }
 
         public bool Enabled => gameObject.activeInHierarchy && enabled;
-        public bool IsExecuting => StateMachine.IsExecuting(this);
+        public bool IsExecuting { get; private set; }
 
         public ulong TotalFrames => StateMachine.TotalFrames;
         public float TotalSeconds => StateMachine.TotalSeconds;
@@ -55,6 +55,7 @@ namespace ActionCode.AnimatorStates
 
         internal void ExecuteEnterState()
         {
+            IsExecuting = true;
             EnterState();
             OnEnter?.Invoke();
         }
@@ -67,6 +68,7 @@ namespace ActionCode.AnimatorStates
 
         internal void ExecuteExitState()
         {
+            IsExecuting = false;
             ExitState();
             OnExit?.Invoke();
         }
