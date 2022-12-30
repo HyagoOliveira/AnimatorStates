@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,13 +27,16 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         public int Size => states.Count;
 
-        public Dictionary<int, AbstractState> LastStates { get; private set; }
-        public Dictionary<int, AbstractState> CurrentStates { get; private set; }
+        /// <summary>
+        /// The current number of layers.
+        /// </summary>
+        public int LayersCount => animator.layerCount;
 
         internal ulong TotalFrames { get; private set; }
         internal float TotalSeconds { get; private set; }
 
-        private readonly Dictionary<Type, AbstractState> states = new();
+        private Dictionary<Type, AbstractState> states;
+        private Dictionary<int, AnimatorStateMachineLayer> layers;
 
         private void Reset() => animator = GetComponent<Animator>();
 
@@ -40,17 +44,7 @@ namespace ActionCode.AnimatorStates
         {
             InitializeStates();
             InitializeBinders();
-
-            // Animators may have multiple last/current states since they have multiples layers.
-            var layers = animator.layerCount;
-            LastStates = new(layers);
-            CurrentStates = new(layers);
-
-            for (int i = 0; i < layers; i++)
-            {
-                LastStates.Add(i, null);
-                CurrentStates.Add(i, null);
-            }
+            InitializeLayers();
         }
 
         #region Has State
@@ -130,56 +124,96 @@ namespace ActionCode.AnimatorStates
         }
         #endregion
 
-        #region Is Executing
+        #region Get Last/Current State
         /// <summary>
-        /// Returns whether it is executing the given State.
+        /// Returns the last state from the given index.
+        /// </summary>
+        /// <param name="layer">The layer index.</param>
+        /// <returns>A <see cref="AbstractState"/> instance or null.</returns>
+        public AbstractState GetLastState(int layer = 0) => GetLayer(layer).LastState;
+
+        /// <summary>
+        /// Returns the current state from the given index.
+        /// </summary>
+        /// <param name="layer"><inheritdoc cref="GetLastState(int)"/></param>
+        /// <returns><inheritdoc cref="GetLastState(int)"/></returns>
+        public AbstractState GetCurrentState(int layer = 0) => GetLayer(layer).CurrentState;
+
+        /// <summary>
+        /// Returns the last states from all layers.
+        /// </summary>
+        /// <returns>An array of <see cref="AbstractState"/>.</returns>
+        public AbstractState[] GetLastStates()
+        {
+            return layers.Values
+                .Where(l => l.LastState != null)
+                .Select(l => l.LastState)
+                .ToArray();
+        }
+
+        /// <summary>
+        /// Returns the current states from all layers.
+        /// </summary>
+        /// <returns><inheritdoc cref="GetLastStates()"/></returns>
+        public AbstractState[] GetCurrentStates()
+        {
+            return layers.Values
+                .Where(l => l.CurrentState != null)
+                .Select(l => l.CurrentState)
+                .ToArray();
+        }
+        #endregion
+
+        #region Was/Is Executing
+        /// <summary>
+        /// Returns whether it is executing the given State type.
         /// </summary>
         /// <typeparam name="T">The State type.</typeparam>
-        /// <returns>Whether it is executing the given State.</returns>
+        /// <returns>Whether it is executing the given State type.</returns>
         public bool IsExecuting<T>() where T : IState
         {
-            foreach (var state in CurrentStates.Values)
+            foreach (var layer in layers.Values)
             {
-                if (state is T) return true;
+                var isExecuting =
+                    layer.CurrentState is T &&
+                    layer.CurrentState.IsExecuting;
+
+                if (isExecuting) return true;
             }
             return false;
         }
 
         /// <summary>
-        /// Returns whether it is executing the given State instance.
-        /// </summary>
-        /// <param name="state">The State instance.</param>
-        /// <returns>Whether it is executing the given State.</returns>
-        public bool IsExecuting(AbstractState state) => CurrentStates.ContainsValue(state);
-        #endregion
-
-        #region Was Executing
-        /// <summary>
-        /// Returns whether it was executing the given State.
+        /// Returns whether it is executing the given State type.
         /// </summary>
         /// <typeparam name="T">The State type.</typeparam>
-        /// <returns>Whether it was executing the given State.</returns>
+        /// <returns>Whether it is executing the given State type.</returns>
         public bool WasExecuting<T>() where T : IState
         {
-            foreach (var state in LastStates.Values)
+            foreach (var layer in layers.Values)
             {
-                if (state is T) return true;
+                var wasExecuting =
+                    layer.LastState is T &&
+                    !layer.LastState.IsExecuting;
+
+                if (wasExecuting) return true;
             }
             return false;
         }
+        #endregion
 
         /// <summary>
-        /// Returns whether it was executing the given State instance.
+        /// Returns the layer using th given index.
         /// </summary>
-        /// <param name="state">The State instance.</param>
-        /// <returns>Whether it was executing the given State.</returns>
-        public bool WasExecuting(AbstractState state) => LastStates.ContainsValue(state);
-        #endregion
+        /// <param name="index">The layer index.</param>
+        /// <returns>A <see cref="AnimatorStateMachineLayer"/> or null.</returns>
+        public AnimatorStateMachineLayer GetLayer(int index) =>
+            layers.ContainsKey(index) ? layers[index] : null;
 
         internal void EnterState(AbstractState state, int layerIndex)
         {
             ResetTime();
-            CurrentStates[layerIndex] = state;
+            layers[layerIndex].EnterState(state);
             state.ExecuteEnterState();
         }
 
@@ -192,13 +226,14 @@ namespace ActionCode.AnimatorStates
         internal void ExitState(AbstractState state, int layerIndex)
         {
             ResetTime();
-            LastStates[layerIndex] = state;
+            layers[layerIndex].ExitState(state);
             state.ExecuteExitState();
         }
 
         private void InitializeStates()
         {
             var childrenStates = GetComponentsInChildren<AbstractState>(includeInactive: true);
+            states = new(childrenStates.Length);
             foreach (var state in childrenStates)
             {
                 var key = state.GetType();
@@ -214,6 +249,16 @@ namespace ActionCode.AnimatorStates
             foreach (var binder in binders)
             {
                 binder.Initialize(this);
+            }
+        }
+
+        private void InitializeLayers()
+        {
+            layers = new(LayersCount);
+            for (int i = 0; i < LayersCount; i++)
+            {
+                var layer = new AnimatorStateMachineLayer(i, animator);
+                layers.Add(i, layer);
             }
         }
 

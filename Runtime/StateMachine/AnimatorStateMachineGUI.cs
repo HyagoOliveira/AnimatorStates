@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace ActionCode.AnimatorStates
 {
@@ -20,6 +19,8 @@ namespace ActionCode.AnimatorStates
         private int lines;
         private GUIStyle style;
 
+        private const string nullStateName = "NONE";
+
         private void Reset() => stateMachine = GetComponent<AnimatorStateMachine>();
         private void Start() => SetupStyle();
 
@@ -27,8 +28,14 @@ namespace ActionCode.AnimatorStates
         {
             lines = 1;
 
-            var lastStateNames = GetStateNames(stateMachine.LastStates);
-            var currentStateNames = GetStateNames(stateMachine.CurrentStates);
+            var lastStateNames = nullStateName;
+            var currentStateNames = nullStateName;
+
+            if (Application.isPlaying)
+            {
+                lastStateNames = GetStateText(stateMachine.GetLastStates());
+                currentStateNames = GetStateText(stateMachine.GetCurrentStates());
+            }
 
             GUI.BeginGroup(area, title, new GUIStyle("Box"));
 
@@ -57,11 +64,11 @@ namespace ActionCode.AnimatorStates
 
         private float GetLineHeight() => style.lineHeight;
 
-        private static string GetStateNames(Dictionary<int, AbstractState> states)
+        private static string GetStateText(AbstractState[] states)
         {
-            const string nullStateName = "NONE";
-            if (states == null) return nullStateName;
-            return string.Join(", ", states.Values);
+            return states != null && states.Length > 0 ?
+                string.Join<AbstractState>(", ", states) :
+                nullStateName;
         }
     }
 }
