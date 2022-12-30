@@ -26,13 +26,13 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         public int Size => states.Count;
 
+        public Dictionary<int, AbstractState> LastStates { get; private set; }
+        public Dictionary<int, AbstractState> CurrentStates { get; private set; }
+
         internal ulong TotalFrames { get; private set; }
         internal float TotalSeconds { get; private set; }
 
         private readonly Dictionary<Type, AbstractState> states = new();
-
-        private Dictionary<int, AbstractState> lastStates;
-        private Dictionary<int, AbstractState> currentStates;
 
         private void Reset() => animator = GetComponent<Animator>();
 
@@ -43,13 +43,13 @@ namespace ActionCode.AnimatorStates
 
             // Animators may have multiple last/current states since they have multiples layers.
             var layers = animator.layerCount;
-            lastStates = new(layers);
-            currentStates = new(layers);
+            LastStates = new(layers);
+            CurrentStates = new(layers);
 
             for (int i = 0; i < layers; i++)
             {
-                lastStates.Add(i, null);
-                currentStates.Add(i, null);
+                LastStates.Add(i, null);
+                CurrentStates.Add(i, null);
             }
         }
 
@@ -138,7 +138,7 @@ namespace ActionCode.AnimatorStates
         /// <returns>Whether it is executing the given State.</returns>
         public bool IsExecuting<T>() where T : IState
         {
-            foreach (var state in currentStates.Values)
+            foreach (var state in CurrentStates.Values)
             {
                 if (state is T) return true;
             }
@@ -150,7 +150,7 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         /// <param name="state">The State instance.</param>
         /// <returns>Whether it is executing the given State.</returns>
-        public bool IsExecuting(AbstractState state) => currentStates.ContainsValue(state);
+        public bool IsExecuting(AbstractState state) => CurrentStates.ContainsValue(state);
         #endregion
 
         #region Was Executing
@@ -161,7 +161,7 @@ namespace ActionCode.AnimatorStates
         /// <returns>Whether it was executing the given State.</returns>
         public bool WasExecuting<T>() where T : IState
         {
-            foreach (var state in lastStates.Values)
+            foreach (var state in LastStates.Values)
             {
                 if (state is T) return true;
             }
@@ -173,13 +173,13 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         /// <param name="state">The State instance.</param>
         /// <returns>Whether it was executing the given State.</returns>
-        public bool WasExecuting(AbstractState state) => lastStates.ContainsValue(state);
+        public bool WasExecuting(AbstractState state) => LastStates.ContainsValue(state);
         #endregion
 
         internal void EnterState(AbstractState state, int layerIndex)
         {
             ResetTime();
-            currentStates[layerIndex] = state;
+            CurrentStates[layerIndex] = state;
             state.ExecuteEnterState();
         }
 
@@ -192,7 +192,7 @@ namespace ActionCode.AnimatorStates
         internal void ExitState(AbstractState state, int layerIndex)
         {
             ResetTime();
-            lastStates[layerIndex] = state;
+            LastStates[layerIndex] = state;
             state.ExecuteExitState();
         }
 
