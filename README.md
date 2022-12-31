@@ -86,31 +86,29 @@ namespace YourGameNamespace
         private void OnEnable() => runState.OnEnter += HandleRunEnter;
         private void OnDisable() => runState.OnEnter -= HandleRunEnter;
 
-        private void HandleRunEnter()
-        {
-            print("Player starts to run!");
-        }
+        private void HandleRunEnter() => print("Player starts to run!");
     }
 }
 ```
 
 #### Binding a State into Animator Controller
 
-The final step is open your Animation Controller asset, select a State and click on the **Add Behaviour** button. 
+The final step is open your Animation Controller asset, select a State and click on the **Add Behaviour** button.
+
 Select **StateBinder** and type your class name on the **State Name** field, like "RunState".
 
 ![AnimatorController Screenshot](/Docs~/AnimatorController.png "Using Abstract State")
 
 ### Using AnimatorStateMachineGUI
 
-Add the [AnimatorStateMachineGUI](/Runtime/StateMachine/AnimatorStateMachineGUI.cs) component inside the same GameObject where your AnimatorStateMachine component is
+Add the [AnimatorStateMachineGUI](/Runtime/StateMachine/AnimatorStateMachineGUI.cs) component inside the same GameObject where your **AnimatorStateMachine** component is
 and you be able to see the Current and Last States on your Game window.
 
 ## Installation
 
 ### Using the Package Registry Server
 
-Follow the instructions inside [here](https://cutt.ly/ukvj1c8) and the package **ActionCode-[PACKAGE]** 
+Follow the instructions inside [here](https://cutt.ly/ukvj1c8) and the package **ActionCode-Animator States** 
 will be available for you to install using the **Package Manager** windows.
 
 ### Using the Git URL
