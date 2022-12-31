@@ -63,7 +63,7 @@ namespace YourGameNamespace
 }
 ````
 
-> **Note**: when attaching an **AbstractState** component in any GameObject, an **AnimatorStateMachine** component will be automatically added to this GameObject root if no one is.
+> **Note**: when attaching an **AbstractState** component, an **AnimatorStateMachine** component will be automatically added to this GameObject root if no one is.
 
 You can get a reference of this state by using `AnimatorStateMachine.GetState<RunState>()` or using a serialized reference.
 
@@ -104,7 +104,7 @@ Select **StateBinder** and type your class name on the **State Name** field, lik
 Add the [AnimatorStateMachineGUI](/Runtime/StateMachine/AnimatorStateMachineGUI.cs) component inside the same GameObject where your **AnimatorStateMachine** component is
 and you be able to see the **Current** and **Last** States on your Game window.
 
-> **Note**: since an **Animator** has multiple Layers, there are multiple Current and Last State, one per Layer.
+> **Note**: since an **Animator** has multiple Layers, there are multiple Current and Last State as well, one per Layer.
 
 ## Installation
 
