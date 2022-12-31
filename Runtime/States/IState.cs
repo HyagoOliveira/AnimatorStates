@@ -10,17 +10,17 @@ namespace ActionCode.AnimatorStates
         /// <summary>
         /// Event fired when entering this State.
         /// </summary>
-        event Action OnEnter;
+        event Action OnEntered;
 
         /// <summary>
         /// Event fired when updating this State.
         /// </summary>
-        event Action OnUpdate;
+        event Action OnUpdated;
 
         /// <summary>
         /// Event fired when exiting this State.
         /// </summary>
-        event Action OnExit;
+        event Action OnExited;
 
         /// <summary>
         /// Whether this State is currently enabled.

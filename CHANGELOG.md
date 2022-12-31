@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Increase Unity minimum version to 2021.1
+- AbstractState OnEnter, OnUpdate and OnExit are renamed to OnEntered, OnUpdated and OnExited
 
 ### Added
 - IState interface

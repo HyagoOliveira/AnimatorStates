@@ -9,9 +9,9 @@ namespace ActionCode.AnimatorStates
     /// </summary>
     public abstract class AbstractState : MonoBehaviour, IState, IEquatable<AbstractState>
     {
-        public event Action OnEnter;
-        public event Action OnUpdate;
-        public event Action OnExit;
+        public event Action OnEntered;
+        public event Action OnUpdated;
+        public event Action OnExited;
 
         public AnimatorStateMachine StateMachine { get; internal set; }
 
@@ -57,20 +57,20 @@ namespace ActionCode.AnimatorStates
         {
             IsExecuting = true;
             EnterState();
-            OnEnter?.Invoke();
+            OnEntered?.Invoke();
         }
 
         internal void ExecuteUpdateState()
         {
             UpdateState();
-            OnUpdate?.Invoke();
+            OnUpdated?.Invoke();
         }
 
         internal void ExecuteExitState()
         {
             IsExecuting = false;
             ExitState();
-            OnExit?.Invoke();
+            OnExited?.Invoke();
         }
 
         protected virtual void EnterState() { }
