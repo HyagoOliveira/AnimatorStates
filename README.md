@@ -1,37 +1,39 @@
 # Animator States
 
-* Use scene instance objects on Animators Controllers assets, inside StateMachineBehaviour.
+* Bind MonoBehaviour State components inside Animator Controllers States.
 * Unity minimum version: **2021.1**
 * Current version: **1.2.0**
 * License: **MIT**
 
 ## Summary
 
-Unity has a **StateMachineBehaviour** class designed to be attached to an animator state or sub-state machine in an Animator Controller. 
-These can be used to add all sorts of state dependent behaviours such as playing sounds, particle effects or enable/disable colliders whenever you enter a state. 
+Unity has a **StateMachineBehaviour** class designed to be attached to an state or sub-state machine inside an Animator Controller. 
+These can be used to add all sorts of state dependent behaviours whenever you enter, update or exit a state. 
 They can even be used to make logic state machines which are independent of animation for reusability.
 
-The limitation of StateMachineBehaviours is they cannot reference instantiated scene components. StateMachineBehaviours are not like MonoBehaviours in the way they are created. Instances of MonoBehaviours are created when they are added to a GameObject and are therefore scene objects. 
-The StateMachineBehaviour class derives from ScriptableObject. As such, state machine behaviours are assets, not scene objects. This means that in order to exist within a scene, instances of state machine behaviours are automatically created at runtime during the Animator's internal Awake call. 
+However, the limitation of **StateMachineBehaviours** is they cannot reference instantiated scene components because they are not **MonoBehaviours**. They are **ScriptableObjects** and, as such, they are assets, not scene objects. This means that in order to exist within a scene, instances of **StateMachineBehaviours** are automatically created at runtime during the Animator's internal Awake call. 
+
 Finding a reference to them during a MonoBehaviour's Awake function is not recommended as it will yield unpredictable results.
 
-To solve this situation, we can use **AnimatorStateMachine** and **AbstractAnimatorState** or **AbstractMonoBehaviourState** implementations provided on this package.
+To solve this situation, we can use **AnimatorStateMachine** and implementations of **AbstractState** provided on this package.
 
 ## How To Use
 
 ### Using AnimatorStateMachine
 
-Add the [AnimatorStateMachine](/Runtime/StatesMachine/AnimatorStateMachine.cs) component inside the same GameObject where your Animator component is. 
-This script will act as a bridge to the referenced scene objects and yours [AbstractAnimatorState](/Runtime/States/AbstractAnimatorState.cs) implementations.
+Add the [AnimatorStateMachine](/Runtime/StateMachine/AnimatorStateMachine.cs) component inside the same GameObject where your **Animator** component is. 
+This script will act as a bridge between the Animator Controller asset and yours [AbstractState](/Runtime/States/AbstractState.cs) implementations.
 
-AbstractAnimatorState derives from StateMachineBehaviour and therefore are identical to them but **can reference instantiated components** on the Scene. 
-You can create implementations of this class and use some functionalities already implemented like find components inside the runtime transform.
+### Using AbstractState
 
-### Using AbstractMonoBehaviourState
+**AbstractState** derives from **MonoBehaviour** and therefore **can reference local components** on the GameObject.
 
-Add the [AnimatorStateMachine](/Runtime/StatesMachine/AnimatorStateMachine.cs) component inside the same GameObject where your Animator component is.
+#### Implementing AbstractState class
 
-Implement a class from [AbstractMonoBehaviourState](/Runtime/States/AbstractMonoBehaviourState.cs) and add it to the same GameObject. AbstractMonoBehaviourState derives from MonoBehaviour and you can override the `EnterState()`, `UpdateState()` or `ExitState()` functions to execute code when the Animator enters, updates or exits a selected State, respectively. 
+Implement a class from [AbstractState](/Runtime/States/AbstractState.cs). 
+You can override the virtual `EnterState()`, `UpdateState()` or `ExitState()` functions to execute code when the Animator enters, updates or exits this State, respectively. 
+
+The bellow `RunState` class will play a start sound when entering it and a stop sound when exiting it:
 
 ```csharp
 using UnityEngine;
@@ -40,19 +42,36 @@ using ActionCode.AnimatorStates;
 namespace YourGameNamespace
 {
     [DisallowMultipleComponent]
-    public sealed class RunState : AbstractMonoBehaviourState
+    public sealed class RunState : AbstractState
     {
-        protected override void UpdateState()
+        public AudioSource source;
+        public AudioClip startSound;
+        public AudioClip stopSound;
+
+        protected override void EnterState()
         {
-            base.UpdateState();
-            print("UpdateState");
+            base.EnterState();
+            source.PlayOneShot(startSound);
+        }
+
+        protected override void ExitState()
+        {
+            base.ExitState();
+            source.PlayOneShot(stopSound);
         }
     }
 }
 ````
 
-You can get a reference from this state using `AnimatorStateMachine.GetBehaviourState<RunState>()` or using a normal serialized approach.
-After getting a reference, you can use the available `OnEnter`, `OnUpdate` or `OnExit` events.
+When attaching an **AbstractState** component in any GameObject, a **AnimatorStateMachine** component will be automatically added to this GameObject root if no one is.
+
+You can get a reference of this state by using `AnimatorStateMachine.GetState<RunState>()` or using a serialized reference.
+
+#### Using AbstractState events
+
+In order to uncouple the system, `OnEnter`, `OnUpdate` and `OnExit` events are available so other classes can easily use them.
+
+The bellow Tutorial class prints a log message when entering in the Run State:
 
 ```csharp
 using UnityEngine;
@@ -64,10 +83,10 @@ namespace YourGameNamespace
     {
         public RunState runState;
 
-        private void OnEnable() => runState.OnEnter += HandleOnRunEnter;
-        private void OnDisable() => runState.OnEnter -= HandleOnRunEnter;
+        private void OnEnable() => runState.OnEnter += HandleRunEnter;
+        private void OnDisable() => runState.OnEnter -= HandleRunEnter;
 
-        private void HandleOnRunEnter()
+        private void HandleRunEnter()
         {
             print("Player starts to run!");
         }
@@ -75,19 +94,17 @@ namespace YourGameNamespace
 }
 ```
 
-Finally, open your Animation Controller asset, select a State and click on the **Add Behaviour** button. 
-Select **MonoBehaviourState** and write your class name on the **State Name** field.
+#### Binding a State into Animator Controller
 
-![AnimatorController Screenshot](/Docs~/AnimatorController.png "Using AbstractMonoBehaviourState")
+The final step is open your Animation Controller asset, select a State and click on the **Add Behaviour** button. 
+Select **StateBinder** and type your class name on the **State Name** field, like "RunState".
+
+![AnimatorController Screenshot](/Docs~/AnimatorController.png "Using Abstract State")
 
 ### Using AnimatorStateMachineGUI
 
-Add the [AnimatorStateMachineGUI](/Runtime/StatesMachine/AnimatorStateMachineGUI.cs) component inside the same GameObject where your AnimatorStateMachine component is
-and you be able to see the Current and Last States from your Animator.
-
-![AnimatorStateMachineGUI Screenshot](/Docs~/AnimatorStateMachineGUI.png "Using AnimatorStateMachineGUI")
-
-**This component only works on Editor Mode.**
+Add the [AnimatorStateMachineGUI](/Runtime/StateMachine/AnimatorStateMachineGUI.cs) component inside the same GameObject where your AnimatorStateMachine component is
+and you be able to see the Current and Last States on your Game window.
 
 ## Installation
 

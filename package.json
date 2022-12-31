@@ -3,11 +3,10 @@
   "displayName": "ActionCode-Animator States",
   "version": "1.2.0",
   "unity": "2021.1",
-  "description": "Enables StateMachineBehaviour to use instantiated scenes componentes.",
+  "description": "Bind MonoBehaviour State components inside Animator Controllers States.",
   "keywords": [
     "Animator",
-    "State Machine",
-    "StateMachineBehaviour"
+    "State Machine"
   ],
   "license": "MIT",
   "homepage": "https://github.com/HyagoOliveira/AnimatorStates#readme",
