@@ -7,9 +7,9 @@
 
 ## Summary
 
-Unity has a **StateMachineBehaviour** class designed to be attached to an state or sub-state machine inside an Animator Controller. 
-These can be used to add all sorts of state dependent behaviours whenever you enter, update or exit a state. 
-They can even be used to make logic state machines which are independent of animation for reusability.
+Unity has a **StateMachineBehaviour** class designed to be attached to a State or Sub-State Machine inside an Animator Controller. 
+Using them, you can you can implement behaviors whenever you enter, update or exit a State. 
+They are perfect to make logic state machines which are independent from animations.
 
 However, the limitation of **StateMachineBehaviours** is they cannot reference instantiated scene components because they are not **MonoBehaviours**. They are **ScriptableObjects** and, as such, they are assets, not scene objects. This means that in order to exist within a scene, instances of **StateMachineBehaviours** are automatically created at runtime during the Animator's internal Awake call. 
 
@@ -63,15 +63,15 @@ namespace YourGameNamespace
 }
 ````
 
-When attaching an **AbstractState** component in any GameObject, a **AnimatorStateMachine** component will be automatically added to this GameObject root if no one is.
+> **Note**: when attaching an **AbstractState** component in any GameObject, an **AnimatorStateMachine** component will be automatically added to this GameObject root if no one is.
 
 You can get a reference of this state by using `AnimatorStateMachine.GetState<RunState>()` or using a serialized reference.
 
 #### Using AbstractState events
 
-In order to uncouple the system, `OnEnter`, `OnUpdate` and `OnExit` events are available so other classes can easily use them.
+In order to uncouple the system, `OnEntered`, `OnUpdated` and `OnExited` events are available so other classes can easily use them.
 
-The bellow Tutorial class prints a log message when entering in the Run State:
+The bellow `Tutorial` class prints a log message when entering in the Run State:
 
 ```csharp
 using UnityEngine;
@@ -83,10 +83,10 @@ namespace YourGameNamespace
     {
         public RunState runState;
 
-        private void OnEnable() => runState.OnEnter += HandleRunEnter;
-        private void OnDisable() => runState.OnEnter -= HandleRunEnter;
+        private void OnEnable() => runState.OnEntered += HandleRunEntered;
+        private void OnDisable() => runState.OnEntered -= HandleRunEntered;
 
-        private void HandleRunEnter() => print("Player starts to run!");
+        private void HandleRunEntered() => print("Player started to run!");
     }
 }
 ```
@@ -102,7 +102,9 @@ Select **StateBinder** and type your class name on the **State Name** field, lik
 ### Using AnimatorStateMachineGUI
 
 Add the [AnimatorStateMachineGUI](/Runtime/StateMachine/AnimatorStateMachineGUI.cs) component inside the same GameObject where your **AnimatorStateMachine** component is
-and you be able to see the Current and Last States on your Game window.
+and you be able to see the **Current** and **Last** States on your Game window.
+
+> **Note**: since an **Animator** has multiple Layers, there are multiple Current and Last State, one per Layer.
 
 ## Installation
 
