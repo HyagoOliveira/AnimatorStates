@@ -47,7 +47,12 @@ namespace ActionCode.AnimatorStates
         }
 
         // StateMachineBehaviour lost references every time the Animator is disabled.
-        private void OnEnable() => InitializeBinders();
+        private void OnEnable() => ResetBinders();
+
+        /// <summary>
+        /// Resets all State Binders.
+        /// </summary>
+        public void ResetBinders() => InitializeBinders();
 
         #region Has State
         /// <summary>
