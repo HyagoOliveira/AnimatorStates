@@ -152,7 +152,7 @@ namespace ActionCode.AnimatorStates
         /// <returns>An array of <see cref="AbstractState"/>.</returns>
         public AbstractState[] GetLastStates()
         {
-            return layers.Values
+            return layers?.Values
                 .Where(l => l.LastState != null)
                 .Select(l => l.LastState)
                 .ToArray();
@@ -164,7 +164,7 @@ namespace ActionCode.AnimatorStates
         /// <returns><inheritdoc cref="GetLastStates()"/></returns>
         public AbstractState[] GetCurrentStates()
         {
-            return layers.Values
+            return layers?.Values
                 .Where(l => l.CurrentState != null)
                 .Select(l => l.CurrentState)
                 .ToArray();
