@@ -50,6 +50,15 @@ namespace ActionCode.AnimatorStates
         private void OnEnable() => ResetBinders();
 
         /// <summary>
+        /// Rebinds the animator and reset all binders.
+        /// </summary>
+        public void Rebind ()
+        {
+            animator.Rebind();
+            ResetBinders();
+        }
+
+        /// <summary>
         /// Resets all State Binders.
         /// </summary>
         public void ResetBinders() => InitializeBinders();
