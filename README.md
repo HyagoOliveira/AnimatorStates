@@ -8,7 +8,7 @@
 ## Summary
 
 Unity has a **StateMachineBehaviour** class designed to be attached to a State or Sub-State Machine inside an Animator Controller. 
-Using them, you can you can implement behaviors whenever you enter, update or exit a State. 
+Using them, you can implement behaviors whenever you enter, update or exit a State. 
 They are perfect to make logic state machines which are independent from animations.
 
 However, the limitation of **StateMachineBehaviours** is they cannot reference instantiated scene components because they are not **MonoBehaviours**. They are **ScriptableObjects** and, as such, they are assets, not scene objects. This means that in order to exist within a scene, instances of **StateMachineBehaviours** are automatically created at runtime during the Animator's internal Awake call. 
