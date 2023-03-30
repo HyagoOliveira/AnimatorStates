@@ -32,6 +32,11 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         public int LayersCount => animator.layerCount;
 
+        /// <summary>
+        /// The local Animator component.
+        /// </summary>
+        public Animator Animator => animator;
+
         internal ulong TotalFrames { get; private set; }
         internal float TotalSeconds { get; private set; }
 
@@ -52,7 +57,7 @@ namespace ActionCode.AnimatorStates
         /// <summary>
         /// Rebinds the animator and reset all binders.
         /// </summary>
-        public void Rebind ()
+        public void Rebind()
         {
             animator.Rebind();
             ResetBinders();
