@@ -191,7 +191,12 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         /// <typeparam name="T">The State type.</typeparam>
         /// <returns>Whether it is executing the given State type.</returns>
-        public bool IsExecuting<T>() where T : IState => GetState(typeof(T)).IsExecuting;
+        public bool IsExecuting<T>() where T : IState
+        {
+            var state = GetState(typeof(T));
+            var hasState = state != null;
+            return hasState && state.IsExecuting;
+        }
 
         /// <summary>
         /// Returns whether it is executing the given State type.
