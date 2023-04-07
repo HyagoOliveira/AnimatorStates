@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.1] - 2023-04-07
 ### Fixed
 - Null reference exception on some AnimatorStateMachine functions
 
@@ -52,7 +53,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - gitignore
 - Initial commit
 
-[Unreleased]: https://github.com/HyagoOliveira/AnimatorStates/compare/2.1.0...main
+[Unreleased]: https://github.com/HyagoOliveira/AnimatorStates/compare/2.1.1...main
+[2.1.1]: https://github.com/HyagoOliveira/AnimatorStates/tree/2.1.1/
 [2.1.0]: https://github.com/HyagoOliveira/AnimatorStates/tree/2.1.0/
 [2.0.0]: https://github.com/HyagoOliveira/AnimatorStates/tree/2.0.0/
 [1.2.0]: https://github.com/HyagoOliveira/AnimatorStates/tree/1.2.0/
