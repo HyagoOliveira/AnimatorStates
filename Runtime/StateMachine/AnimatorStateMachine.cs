@@ -104,6 +104,19 @@ namespace ActionCode.AnimatorStates
 
         #region Get State
         /// <summary>
+        /// Tries to get the given State only if it is present.
+        /// </summary>
+        /// <typeparam name="T">A generic class implementing <see cref="AbstractState"/>.</typeparam>
+        /// <param name="state">The State type.</param>
+        /// <returns>Whether the state is present.</returns>
+        public bool TryGetState<T>(out T state) where T : AbstractState
+        {
+            state = GetState<T>();
+            var hasState = state != null;
+            return hasState;
+        }
+
+        /// <summary>
         /// Gets the given State only if it is present.
         /// </summary>
         /// <typeparam name="T">The State type.</typeparam>
@@ -149,16 +162,24 @@ namespace ActionCode.AnimatorStates
         /// <summary>
         /// Returns the last state from the given index.
         /// </summary>
-        /// <param name="layer">The layer index.</param>
+        /// <param name="layerIndex">The layer index.</param>
         /// <returns>A <see cref="AbstractState"/> instance or null.</returns>
-        public AbstractState GetLastState(int layer = 0) => GetLayer(layer).LastState;
+        public AbstractState GetLastState(int layerIndex = 0)
+        {
+            var hasLayer = TryGetLayer(layerIndex, out AnimatorStateMachineLayer layer);
+            return hasLayer ? layer.LastState : null;
+        }
 
         /// <summary>
         /// Returns the current state from the given index.
         /// </summary>
-        /// <param name="layer"><inheritdoc cref="GetLastState(int)"/></param>
+        /// <param name="layerIndex"><inheritdoc cref="GetLastState(int)"/></param>
         /// <returns><inheritdoc cref="GetLastState(int)"/></returns>
-        public AbstractState GetCurrentState(int layer = 0) => GetLayer(layer).CurrentState;
+        public AbstractState GetCurrentState(int layerIndex = 0)
+        {
+            var hasLayer = TryGetLayer(layerIndex, out AnimatorStateMachineLayer layer);
+            return hasLayer ? layer.CurrentState : null;
+        }
 
         /// <summary>
         /// Returns the last states from all layers.
@@ -191,10 +212,9 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         /// <typeparam name="T">The State type.</typeparam>
         /// <returns>Whether it is executing the given State type.</returns>
-        public bool IsExecuting<T>() where T : IState
+        public bool IsExecuting<T>() where T : AbstractState
         {
-            var state = GetState(typeof(T));
-            var hasState = state != null;
+            var hasState = TryGetState(out T state);
             return hasState && state.IsExecuting;
         }
 
@@ -237,6 +257,20 @@ namespace ActionCode.AnimatorStates
             animator.GetCurrentAnimatorStateInfo(layer).shortNameHash == id;
         #endregion
 
+        #region Get Layer
+        /// <summary>
+        /// Tries to get the layer using the given index.
+        /// </summary>
+        /// <param name="index">The layer index.</param>
+        /// <param name="layer">The layer if found.</param>
+        /// <returns>Whether the layer was found.</returns>
+        public bool TryGetLayer(int index, out AnimatorStateMachineLayer layer)
+        {
+            layer = GetLayer(index);
+            var hasLayer = layer != null;
+            return hasLayer;
+        }
+
         /// <summary>
         /// Returns the layer using th given index.
         /// </summary>
@@ -244,6 +278,7 @@ namespace ActionCode.AnimatorStates
         /// <returns>A <see cref="AnimatorStateMachineLayer"/> or null.</returns>
         public AnimatorStateMachineLayer GetLayer(int index) =>
             layers.ContainsKey(index) ? layers[index] : null;
+        #endregion
 
         internal void EnterState(AbstractState state, int layerIndex)
         {

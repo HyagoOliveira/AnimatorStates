@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Fixed
-- Null reference exception on AnimatorStateMachine.IsExecuting function
+- Null reference exception on some AnimatorStateMachine functions
 
 ## [2.1.0] - 2023-03-30
 ### Added
