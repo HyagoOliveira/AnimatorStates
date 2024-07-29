@@ -240,6 +240,9 @@ namespace ActionCode.AnimatorStates
         #region Is Animator State
         /// <summary>
         /// Whether the given name matches the current Animator state.
+        /// <para>
+        /// <b>It will check the next state if executed inside the ExitState function</b>.
+        /// </para>
         /// </summary>
         /// <param name="name">Name of the state.</param>
         /// <param name="layer">The layer index.</param>
@@ -249,6 +252,9 @@ namespace ActionCode.AnimatorStates
 
         /// <summary>
         /// Whether the given id matches the current Animator state.
+        /// <para>
+        /// <b>It will check the next state if executed inside the ExitState function</b>.
+        /// </para>
         /// </summary>
         /// <param name="id">The state ID. Use <see cref="Animator.StringToHash(string)"/> to hash it.</param>
         /// <param name="layer">The layer index.</param>
