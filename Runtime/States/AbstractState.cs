@@ -48,10 +48,22 @@ namespace ActionCode.AnimatorStates
         public bool Equals(AbstractState state) => GetInstanceID() == state.GetInstanceID();
 
         /// <summary>
-        /// Waits until this State is executing.
+        /// Waits while this State is executing.
         /// </summary>
         /// <returns></returns>
         public IEnumerator WaitWhileIsExecuting() => new WaitWhile(() => IsExecuting);
+
+        /// <summary>
+        /// Asynchronously waits while this State is executing.
+        /// </summary>
+        /// <returns></returns>
+        public async Awaitable WaitWhileIsExecutingAsync()
+        {
+            while (IsExecuting)
+            {
+                await Awaitable.NextFrameAsync(destroyCancellationToken);
+            }
+        }
 
         internal void ExecuteEnterState()
         {
