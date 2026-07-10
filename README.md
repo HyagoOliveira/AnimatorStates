@@ -2,7 +2,6 @@
 
 * Bind MonoBehaviour State components inside Animator Controllers States.
 * Unity minimum version: **6000.1**
-* Current version: **3.0.0**
 * License: **MIT**
 
 ## Summary

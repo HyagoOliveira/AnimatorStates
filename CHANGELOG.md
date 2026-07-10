@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-07-10
 ### Changed
 - Update code API to Unity 6.5
 
@@ -63,7 +64,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - gitignore
 - Initial commit
 
-[Unreleased]: https://github.com/HyagoOliveira/AnimatorStates/compare/3.0.0...main
+[Unreleased]: https://github.com/HyagoOliveira/AnimatorStates/compare/3.1.0...main
+[3.1.0]: https://github.com/HyagoOliveira/AnimatorStates/tree/3.1.0/
 [3.0.0]: https://github.com/HyagoOliveira/AnimatorStates/tree/3.0.0/
 [2.1.1]: https://github.com/HyagoOliveira/AnimatorStates/tree/2.1.1/
 [2.1.0]: https://github.com/HyagoOliveira/AnimatorStates/tree/2.1.0/

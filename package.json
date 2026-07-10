@@ -1,7 +1,7 @@
 {
   "name": "com.actioncode.animator-states",
   "displayName": "ActionCode-Animator States",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "unity": "6000.1",
   "description": "Bind MonoBehaviour State components inside Animator Controllers States.",
   "keywords": [
