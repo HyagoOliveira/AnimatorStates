@@ -45,7 +45,7 @@ namespace ActionCode.AnimatorStates
         /// </summary>
         /// <param name="state">The other State to check.</param>
         /// <returns>Whether this State is equals to the given one.</returns>
-        public bool Equals(AbstractState state) => GetInstanceID() == state.GetInstanceID();
+        public bool Equals(AbstractState state) => GetEntityId() == state.GetEntityId();
 
         /// <summary>
         /// Waits while this State is executing.

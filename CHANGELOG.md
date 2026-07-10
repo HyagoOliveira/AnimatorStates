@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Update code API to Unity 6.5
+
 ## [3.0.0] - 2026-01-09
 ### Added
 - WaitWhileIsExecutingAsync function
